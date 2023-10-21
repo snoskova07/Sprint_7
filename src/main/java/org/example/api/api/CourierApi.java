@@ -1,9 +1,9 @@
-package org.example.api.client;
+package org.example.api.api;
 
 import io.restassured.response.Response;
 import org.example.api.model.CreateCourierRequest;
 import org.example.api.model.LoginCourierRequest;
-import static org.example.api.config.Config.BASE_URL;
+import static org.example.api.config.ConfigUrl.BASE_URL;
 
 public class CourierApi extends BaseApi {
 

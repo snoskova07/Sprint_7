@@ -1,4 +1,4 @@
-package org.example.api.client;
+package org.example.api.api;
 
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -13,5 +13,11 @@ public class BaseApi {
                 .filter(new RequestLoggingFilter())
                 .filter(new ResponseLoggingFilter())
                 .contentType(ContentType.JSON);
+    }
+
+    public RequestSpecification getGetSpec() {
+        return  given()
+                .filter(new RequestLoggingFilter())
+                .filter(new ResponseLoggingFilter());
     }
 }

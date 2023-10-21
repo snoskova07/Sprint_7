@@ -1,46 +1,85 @@
 package org.example;
+import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.http.HttpStatus;
+import org.example.api.api.CourierApi;
+import org.example.api.helper.CourierGenerator;
+import org.example.api.helper.CourierHelper;
 import org.example.api.model.CreateCourierRequest;
-import org.example.api.model.LoginCourierResponse;
-import io.restassured.RestAssured;
 import org.example.api.model.LoginCourierRequest;
-import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Random;
 import static org.hamcrest.Matchers.*;
 import static io.restassured.RestAssured.given;
-public class TestLogin {
+
+public class LoginTest {
+
+    CreateCourierRequest courierRequest;
+    LoginCourierRequest loginRequest;
+    CourierApi courierApiClient;
+    CourierHelper courierHelper;
 
     @Before
-    public void setUp() {
-        RestAssured.baseURI = "http://qa-scooter.praktikum-services.ru/";
+    public void setup() {
+        courierApiClient = new CourierApi();
+        courierRequest = CourierGenerator.getRandomCourier();
+        courierApiClient.createCourier(courierRequest);
     }
 
-    // Создание курьера
     @Test
-    public void loginByCourier() {
-        String login = "login" + new Random().nextInt(10000);
-        String password = "password" + new Random().nextInt(10000);
-        String firstName ="Fedor" + new Random().nextInt(10000);
-        CreateCourierRequest courier  = new CreateCourierRequest(login, password, firstName); // создай объект, который соответствует JSON
-        given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(courier)
-                .when()
-                .post("/api/v1/courier");
+    @DisplayName("Успешный логин под курьером")
+    public void successLoginByCourier() {
+        loginRequest  = new LoginCourierRequest(courierRequest.getLogin(), courierRequest.getPassword());
+        courierHelper = new CourierHelper();
+        Response response = courierApiClient.loginCourier(loginRequest);
+        response.then().assertThat().body("id", notNullValue())
+                .and().statusCode(HttpStatus.SC_OK);
+    }
 
-        LoginCourierRequest loginToSystem  = new LoginCourierRequest(login, password);
-        LoginCourierResponse delogin = given()
-                .header("Content-type", "application/json")
-                .and()
-                .body(loginToSystem)
-                .when()
-                .post("/api/v1/courier/login").as(LoginCourierResponse.class);
-        MatcherAssert.assertThat(delogin, notNullValue());
-        int id = delogin.getId();
-        System.out.println(id);
+    @Test
+    @DisplayName("Вход с пустым полем login")
+    public void cannotLoginWithoutLogin() {
+        courierRequest.setLogin("");
+        loginRequest  = new LoginCourierRequest(courierRequest.getLogin(), courierRequest.getPassword());
+        courierHelper = new CourierHelper();
+        Response response = courierApiClient.loginCourier(loginRequest);
+        response.then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
+                .and().statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("Вход с пустым полем password")
+    public void cannotLoginWithoutPassword() {
+        courierRequest.setPassword("");
+        loginRequest  = new LoginCourierRequest(courierRequest.getLogin(), courierRequest.getPassword());
+        courierHelper = new CourierHelper();
+        Response response = courierApiClient.loginCourier(loginRequest);
+        response.then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
+                .and().statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
+
+    @Test
+    @DisplayName("Вход с неверным login")
+    public void cannotLoginWithWrongLogin() {
+        courierRequest.setLogin(RandomStringUtils.randomAlphabetic(10));
+        loginRequest  = new LoginCourierRequest(courierRequest.getLogin(), courierRequest.getPassword());
+        courierHelper = new CourierHelper();
+        Response response = courierApiClient.loginCourier(loginRequest);
+        response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
+                .and().statusCode(HttpStatus.SC_NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("Вход с неверным password")
+    public void cannotLoginWithWrongPassword() {
+        courierRequest.setPassword(RandomStringUtils.randomAlphabetic(10));
+        loginRequest  = new LoginCourierRequest(courierRequest.getLogin(), courierRequest.getPassword());
+        courierHelper = new CourierHelper();
+        Response response = courierApiClient.loginCourier(loginRequest);
+        response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
+                .and().statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
 }

@@ -1,6 +1,7 @@
 package org.example.api.model;
 
-public class Delogin {
+public class LoginCourierResponse {
+    public int id;
 
     public int getId() {
         return id;
@@ -10,10 +11,10 @@ public class Delogin {
         this.id = id;
     }
 
-    private int id;
-
-    public Delogin() {
+    public LoginCourierResponse(int id) {
+        this.id = id;
     }
+
 
 
 }

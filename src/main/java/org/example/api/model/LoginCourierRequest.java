@@ -1,6 +1,14 @@
 package org.example.api.model;
 
-public class Login {
+public class LoginCourierRequest {
+
+    public LoginCourierRequest(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
+    public LoginCourierRequest() {
+    }
 
     private String login;
     private String password;
@@ -19,14 +27,6 @@ public class Login {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Login(String login, String password) {
-        this.login = login;
-        this.password = password;
-    }
-
-    public Login() {
     }
 
 }

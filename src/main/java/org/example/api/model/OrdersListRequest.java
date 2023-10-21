@@ -1,16 +1,18 @@
 package org.example.api.model;
 
-public class OrdersListResponse {
+import java.util.List;
 
-    private Orders orders;
+public class OrdersListRequest {
+
+    private List<Orders> orders;
     private PageInfo pageInfo;
-    private AvailableStations availableStations;
+    private List<AvailableStations> availableStations;
 
-    public Orders getOrders() {
+    public List<Orders> getOrders() {
         return orders;
     }
 
-    public void setOrders(Orders orders) {
+    public void setOrders(List<Orders> orders) {
         this.orders = orders;
     }
 
@@ -22,11 +24,11 @@ public class OrdersListResponse {
         this.pageInfo = pageInfo;
     }
 
-    public AvailableStations getAvailableStations() {
+    public List<AvailableStations> getAvailableStations() {
         return availableStations;
     }
 
-    public void setAvailableStations(AvailableStations availableStations) {
+    public void setAvailableStations(List<AvailableStations> availableStations) {
         this.availableStations = availableStations;
     }
 }

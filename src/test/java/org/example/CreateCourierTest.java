@@ -1,45 +1,46 @@
 package org.example;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
-import org.example.api.client.CourierApiClient;
-import org.example.api.helper.CourierGeneratorHelper;
+import org.example.api.api.CourierApi;
+import org.example.api.helper.CourierGenerator;
 import org.example.api.model.CreateCourierRequest;
 import org.junit.Before;
 import org.junit.Test;
 import static org.hamcrest.Matchers.equalTo;
 
-public class TestCourier {
+public class CreateCourierTest {
     CreateCourierRequest createCourierRequest;
-    CourierApiClient courierApiClient;
+    CourierApi courierApiClient;
 
     @Before
     public void setUp() {
-        courierApiClient = new CourierApiClient();
+        courierApiClient = new CourierApi();
 }
 
-// Успешное создание курьера
     @Test
+    @DisplayName("Успешное создание курьера")
     public void createCourier() {
-        createCourierRequest = CourierGeneratorHelper.getRandomCourier();
+        createCourierRequest = CourierGenerator.getRandomCourier();
         Response response = courierApiClient.createCourier(createCourierRequest);
         response.then().assertThat().body("ok", equalTo(true))
                 .and().statusCode(HttpStatus.SC_CREATED);
     }
 
-    // Невозможность Создания 2 курьеров с одинаковым логином
     @Test
+    @DisplayName("Невозможность Создания 2 курьеров с одинаковым логином")
     public void createTwoEqualsCouriersIsNotPossible() {
-        createCourierRequest = CourierGeneratorHelper.getRandomCourier();
+        createCourierRequest = CourierGenerator.getRandomCourier();
         courierApiClient.createCourier(createCourierRequest);
         Response response = courierApiClient.createCourier(createCourierRequest);
         response.then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
                 .and().statusCode(HttpStatus.SC_CONFLICT);
     }
 
-    //Создание курьера без логина не возможно
     @Test
+    @DisplayName("Создание курьера без логина не возможно")
     public void createCourierWithoutLoginIsNotPossible() {
-        createCourierRequest = CourierGeneratorHelper.getRandomCourier();
+        createCourierRequest = CourierGenerator.getRandomCourier();
         createCourierRequest.setLogin("");
         Response response = courierApiClient.createCourier(createCourierRequest);
         response.then().assertThat()
@@ -47,20 +48,20 @@ public class TestCourier {
                 .and().statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
-    //Создание курьера без пароля не возможно
     @Test
+    @DisplayName("Создание курьера без пароля не возможно")
     public void createCourierWithoutPasswordIsNotPossible() {
-        createCourierRequest = CourierGeneratorHelper.getRandomCourier();
+        createCourierRequest = CourierGenerator.getRandomCourier();
         createCourierRequest.setPassword("");
         Response response = courierApiClient.createCourier(createCourierRequest);
         response.then().assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
                 .and().statusCode(HttpStatus.SC_BAD_REQUEST);
     }
 
-    //Создание курьера без FirstName возможно
     @Test
+    @DisplayName("Создание курьера без FirstName возможно")
     public void createCourierWithoutFirstNameIsPossible() {
-        createCourierRequest = CourierGeneratorHelper.getRandomCourier();
+        createCourierRequest = CourierGenerator.getRandomCourier();
         createCourierRequest.setFirstName("");
         Response response = courierApiClient.createCourier(createCourierRequest);
         response.then().assertThat().body("ok", equalTo(true))

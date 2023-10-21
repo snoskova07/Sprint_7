@@ -1,18 +1,18 @@
 package org.example.api.model;
 
-public class Courier {
-    private String login;
-    private String password;
-    private String firstName;
+public class CreateCourierRequest {
+    public String login;
+    public String password;
+    public String firstName;
 
-    public Courier(String login, String password, String firstName) {
+    public CreateCourierRequest(String login, String password, String firstName) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
     }
 
     // конструктор без параметров
-    public Courier() {
+    public CreateCourierRequest() {
     }
 
     public String getLogin() {

@@ -1,10 +1,10 @@
-package org.example.api.client;
+package org.example.api.api;
 
 import io.restassured.response.Response;
-import org.example.api.model.CreateCourierRequest;
 import org.example.api.model.CreateOrderRequest;
+import org.example.api.model.OrdersListRequest;
 
-import static org.example.api.config.Config.BASE_URL;
+import static org.example.api.config.ConfigUrl.BASE_URL;
 public class OrderApi extends BaseApi {
 
     public Response createOrder(CreateOrderRequest createOrderRequest) {
@@ -14,5 +14,9 @@ public class OrderApi extends BaseApi {
                 .post(BASE_URL + "/api/v1/orders");
     }
 
+    public Response getOrdersList() {
+        return getGetSpec()
+                .get(BASE_URL + "/api/v1/orders");
+    }
 
 }
