@@ -7,6 +7,7 @@ import org.example.api.api.CourierApi;
 import org.example.api.helper.CourierGenerator;
 import org.example.api.helper.CourierHelper;
 import org.example.api.model.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,12 +25,25 @@ public class LoginTest {
     DeleteCourierResponse deleteCourierResponse;
     CourierApi courierApiClient;
     CourierHelper courierHelper;
-
+    Response response;
+    String login;
+    String password;
     @Before
     public void setup() {
         courierApiClient = new CourierApi();
         courierRequest = CourierGenerator.getRandomCourier();
         courierApiClient.createCourier(courierRequest);
+        login = courierRequest.getLogin();
+        password = courierRequest.getPassword();
+    }
+
+    @After
+    public void deleteCourier() {
+
+        String id = Integer.toString(loginCourierResponse.id);
+        deleteCourierRequest = new DeleteCourierRequest(id);
+        deleteCourierResponse = courierHelper.deleteSuccess(deleteCourierRequest, id);
+
     }
 
     @Test
@@ -37,16 +51,10 @@ public class LoginTest {
     public void successLoginByCourier() {
         loginCourierRequest = new LoginCourierRequest(courierRequest.getLogin(), courierRequest.getPassword());
         courierHelper = new CourierHelper();
-        Response response = courierApiClient.loginCourier(loginCourierRequest);
-
+        response = courierApiClient.loginCourier(loginCourierRequest);
         loginCourierResponse = courierHelper.loginSuccess(loginCourierRequest);
         assertEquals(SC_OK, response.statusCode());
         assertNotNull(loginCourierResponse.id);
-
-        String id = Integer.toString(loginCourierResponse.id);
-        deleteCourierRequest = new DeleteCourierRequest(id);
-        deleteCourierResponse = courierHelper.deleteSuccess(deleteCourierRequest, id);
-
     }
 
     @Test
@@ -58,6 +66,8 @@ public class LoginTest {
         Response response = courierApiClient.loginCourier(loginCourierRequest);
         response.then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
                 .and().statusCode(HttpStatus.SC_BAD_REQUEST);
+        courierRequest.setLogin(login);
+        successLoginByCourier();
     }
 
     @Test
@@ -69,6 +79,8 @@ public class LoginTest {
         Response response = courierApiClient.loginCourier(loginCourierRequest);
         response.then().assertThat().body("message", equalTo("Недостаточно данных для входа"))
                 .and().statusCode(HttpStatus.SC_BAD_REQUEST);
+        courierRequest.setPassword(password);
+        successLoginByCourier();
     }
 
     @Test
@@ -80,6 +92,8 @@ public class LoginTest {
         Response response = courierApiClient.loginCourier(loginCourierRequest);
         response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
                 .and().statusCode(HttpStatus.SC_NOT_FOUND);
+        courierRequest.setLogin(login);
+        successLoginByCourier();
     }
 
     @Test
@@ -91,6 +105,8 @@ public class LoginTest {
         Response response = courierApiClient.loginCourier(loginCourierRequest);
         response.then().assertThat().body("message", equalTo("Учетная запись не найдена"))
                 .and().statusCode(HttpStatus.SC_NOT_FOUND);
+        courierRequest.setPassword(password);
+        successLoginByCourier();
     }
 
 }
