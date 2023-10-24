@@ -1,5 +1,6 @@
 package org.example;
 
+import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import org.example.api.helper.OrderGenerator;
 import org.example.api.model.CreateOrderRequest;
@@ -43,7 +44,7 @@ public class CreateOrderTest {
 
     @Test
     @DisplayName("Создание заказов с различными значениями color")
-    public void createOrder() throws Exception {
+    public void createOrder() {
         createOrderRequest = OrderGenerator.getRandomOrder(color);
         Response response = orderApi.createOrder(createOrderRequest);
         response.then().assertThat().body("track", notNullValue())

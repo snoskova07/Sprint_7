@@ -1,17 +1,21 @@
 package org.example.api.model;
 
 import io.qameta.allure.Step;
-import io.restassured.response.Response;
 
-public class LoginCourierResponse {
-    public int id;
+public class DeleteCourierRequest {
+    private String id;
+
+    public DeleteCourierRequest(String id) {
+        this.id = id;
+    }
 
     @Step("Получение id курьера")
-    public int getId() {
+    public String getId() {
         return id;
     }
+
     @Step("Установка id курьера")
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

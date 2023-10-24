@@ -1,6 +1,10 @@
 package org.example.api.model;
 
+import io.qameta.allure.Step;
+
 public class LoginCourierRequest {
+    private String login;
+    private String password;
 
     public LoginCourierRequest(String login, String password) {
         this.login = login;
@@ -9,9 +13,6 @@ public class LoginCourierRequest {
 
     public LoginCourierRequest() {
     }
-
-    private String login;
-    private String password;
 
     public String getLogin() {
         return login;
@@ -28,5 +29,4 @@ public class LoginCourierRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-
 }

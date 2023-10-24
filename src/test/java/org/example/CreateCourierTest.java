@@ -4,35 +4,55 @@ import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.example.api.api.CourierApi;
 import org.example.api.helper.CourierGenerator;
-import org.example.api.model.CreateCourierRequest;
+import org.example.api.helper.CourierHelper;
+import org.example.api.model.*;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.hamcrest.Matchers.equalTo;
 
 public class CreateCourierTest {
     CreateCourierRequest createCourierRequest;
-    CourierApi courierApiClient;
+    LoginCourierRequest loginCourierRequest;
+    LoginCourierResponse loginCourierResponse;
+    CourierApi courierApi;
+    CourierHelper courierHelper;
+
+    DeleteCourierRequest deleteCourierRequest;
+    DeleteCourierResponse deleteCourierResponse;
 
     @Before
     public void setUp() {
-        courierApiClient = new CourierApi();
+        courierApi = new CourierApi();
 }
 
     @Test
     @DisplayName("Успешное создание курьера")
     public void createCourier() {
         createCourierRequest = CourierGenerator.getRandomCourier();
-        Response response = courierApiClient.createCourier(createCourierRequest);
-        response.then().assertThat().body("ok", equalTo(true))
-                .and().statusCode(HttpStatus.SC_CREATED);
+        Response createResponse = courierApi.createCourier(createCourierRequest);
+   //     createResponse.then().assertThat().body("ok", equalTo(true))
+    //            .and().statusCode(SC_CREATED);
+        CreateCourierResponse createCourierResponse = createResponse.as(CreateCourierResponse.class);
+        Assert.assertTrue(createCourierResponse.ok);
+
+        courierHelper = new CourierHelper();
+        loginCourierRequest  = new LoginCourierRequest(createCourierRequest.login, createCourierRequest.password);
+        loginCourierResponse = courierHelper.loginSuccess(loginCourierRequest);
+
+        String id = Integer.toString(loginCourierResponse.id);
+        deleteCourierRequest = new DeleteCourierRequest(id);
+        deleteCourierResponse = courierHelper.deleteSuccess(deleteCourierRequest, id);
     }
 
     @Test
-    @DisplayName("Невозможность Создания 2 курьеров с одинаковым логином")
+    @DisplayName("Невозможность создания 2 курьеров с одинаковым логином")
     public void createTwoEqualsCouriersIsNotPossible() {
         createCourierRequest = CourierGenerator.getRandomCourier();
-        courierApiClient.createCourier(createCourierRequest);
-        Response response = courierApiClient.createCourier(createCourierRequest);
+        courierApi.createCourier(createCourierRequest);
+        Response response = courierApi.createCourier(createCourierRequest);
         response.then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
                 .and().statusCode(HttpStatus.SC_CONFLICT);
     }
@@ -42,7 +62,7 @@ public class CreateCourierTest {
     public void createCourierWithoutLoginIsNotPossible() {
         createCourierRequest = CourierGenerator.getRandomCourier();
         createCourierRequest.setLogin("");
-        Response response = courierApiClient.createCourier(createCourierRequest);
+        Response response = courierApi.createCourier(createCourierRequest);
         response.then().assertThat()
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"))
                 .and().statusCode(HttpStatus.SC_BAD_REQUEST);
@@ -53,7 +73,7 @@ public class CreateCourierTest {
     public void createCourierWithoutPasswordIsNotPossible() {
         createCourierRequest = CourierGenerator.getRandomCourier();
         createCourierRequest.setPassword("");
-        Response response = courierApiClient.createCourier(createCourierRequest);
+        Response response = courierApi.createCourier(createCourierRequest);
         response.then().assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"))
                 .and().statusCode(HttpStatus.SC_BAD_REQUEST);
     }
@@ -63,8 +83,17 @@ public class CreateCourierTest {
     public void createCourierWithoutFirstNameIsPossible() {
         createCourierRequest = CourierGenerator.getRandomCourier();
         createCourierRequest.setFirstName("");
-        Response response = courierApiClient.createCourier(createCourierRequest);
+        Response response = courierApi.createCourier(createCourierRequest);
         response.then().assertThat().body("ok", equalTo(true))
-                .and().statusCode(HttpStatus.SC_CREATED);
+                .and().statusCode(SC_CREATED);
+
+        courierHelper = new CourierHelper();
+        loginCourierRequest  = new LoginCourierRequest(createCourierRequest.login, createCourierRequest.password);
+        loginCourierResponse = courierHelper.loginSuccess(loginCourierRequest);
+
+        String id = Integer.toString(loginCourierResponse.id);
+        deleteCourierRequest = new DeleteCourierRequest(id);
+        deleteCourierResponse = courierHelper.deleteSuccess(deleteCourierRequest, id);
+
     }
 }

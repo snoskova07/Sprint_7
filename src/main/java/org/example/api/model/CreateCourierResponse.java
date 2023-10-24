@@ -6,4 +6,8 @@ public class CreateCourierResponse {
     public CreateCourierResponse(Boolean ok) {
         this.ok = ok;
     }
+
+    public CreateCourierResponse() {
+    }
+
 }

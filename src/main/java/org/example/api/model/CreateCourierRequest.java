@@ -1,5 +1,7 @@
 package org.example.api.model;
 
+import io.qameta.allure.Step;
+
 public class CreateCourierRequest {
     public String login;
     public String password;
@@ -11,33 +13,28 @@ public class CreateCourierRequest {
         this.firstName = firstName;
     }
 
-    // конструктор без параметров
-    public CreateCourierRequest() {
-    }
-
+    @Step("Получение логина курьера")
     public String getLogin() {
         return login;
     }
 
+    @Step("Установка логина курьера")
     public void setLogin(String login) {
         this.login = login;
     }
 
+    @Step("Получение пароля курьера")
     public String getPassword() {
         return password;
     }
 
+    @Step("Установка пароля курьера")
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
+    @Step("Установка имени курьера")
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-
-
 }

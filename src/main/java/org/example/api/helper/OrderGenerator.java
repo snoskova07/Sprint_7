@@ -1,5 +1,6 @@
 package org.example.api.helper;
 
+import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.example.api.model.CreateCourierRequest;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 public class OrderGenerator {
+    @Step("Создание запроса для курьера")
     public static CreateOrderRequest getRandomOrder(List<String> color) {
         String firstName = "fName" + RandomStringUtils.randomAlphabetic(10);
         String lastName = "lName" + RandomStringUtils.randomAlphabetic(10);
