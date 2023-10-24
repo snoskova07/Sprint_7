@@ -55,6 +55,15 @@ public class CreateCourierTest {
         Response response = courierApi.createCourier(createCourierRequest);
         response.then().assertThat().body("message", equalTo("Этот логин уже используется. Попробуйте другой."))
                 .and().statusCode(HttpStatus.SC_CONFLICT);
+
+        courierHelper = new CourierHelper();
+        loginCourierRequest  = new LoginCourierRequest(createCourierRequest.login, createCourierRequest.password);
+        loginCourierResponse = courierHelper.loginSuccess(loginCourierRequest);
+
+        String id = Integer.toString(loginCourierResponse.id);
+        deleteCourierRequest = new DeleteCourierRequest(id);
+        deleteCourierResponse = courierHelper.deleteSuccess(deleteCourierRequest, id);
+
     }
 
     @Test
