@@ -12,7 +12,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- версия Aspectj -->
-        <aspectj.version>1.9.20</aspectj.version>
+        <aspectj.version>1.9.7</aspectj.version>
         <!-- версия Allure -->
         <allure.version>2.15.0</allure.version>
     </properties>
@@ -31,26 +31,34 @@
             <version>4.4.0</version>
         </dependency>
 
-       <dependency>
+        <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-junit4</artifactId>
-            <version>2.14.0</version>
+            <version>${allure.version}</version>
         </dependency>
 
-        <!-- модуль взаимодействия Allure и RestAssured -->
-        <!--    <dependency>
-                <groupId>io.qameta.allure</groupId>
-                <artifactId>allure-rest-assured</artifactId>
-                <version>2.14.0</version>
-            </dependency>
-        -->
+        <dependency>
+            <!-- модуль взаимодействия Allure и RestAssured -->
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-rest-assured</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.20</version>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
-    <!--
-       <build>
-           <plugins>
-               <plugin> -->
-                   <!-- настройка плагина maven-surefire-plugin -->
-    <!--            <groupId>org.apache.maven.plugins</groupId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- настройка плагина maven-surefire-plugin -->
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
                 <configuration>
@@ -65,30 +73,30 @@
                         </property>
                     </properties>
                     <systemProperties>
-                        <property> -->
+                        <property>
                             <!-- папка, в которую будут генерироваться отчёты Allure -->
-    <!--                          <name>allure.results.directory</name>
-                              <value>${project.build.directory}/allure-results</value>
-                          </property>
-                      </systemProperties>
-                  </configuration>
-                  <dependencies>
-                      <dependency>
-                          <groupId>org.aspectj</groupId>
-                          <artifactId>aspectjweaver</artifactId>
-                          <version>1.9.7</version>
-                      </dependency>
-                  </dependencies>
-              </plugin> -->
-              <!-- подключение плагина allure-maven для вызова функций Allure с помощью Maven -->
-    <!--          <plugin>
-                  <groupId>io.qameta.allure</groupId>
-                  <artifactId>allure-maven</artifactId>
-                  <version>2.10.0</version>
-                  <configuration>
-                      <reportVersion>2.15.0</reportVersion>
-                  </configuration>
-              </plugin>
-          </plugins>
-      </build> -->
-  </project>
+                            <name>allure.results.directory</name>
+                            <value>${project.build.directory}/allure-results</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!-- подключение плагина allure-maven для вызова функций Allure с помощью Maven -->
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.10.0</version>
+                <configuration>
+                    <reportVersion>2.15.0</reportVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
